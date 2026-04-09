@@ -16,6 +16,11 @@ function decodeSession(raw: string): SessionPayload | null {
       return null;
     }
 
+    // Vérifie si le token a expiré
+    if (parsed.expiresAt && parsed.expiresAt < Date.now()) {
+      return null;
+    }
+
     return parsed;
   } catch {
     return null;
@@ -30,7 +35,7 @@ export async function createSession(payload: SessionPayload): Promise<void> {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24,
+    maxAge: payload.expiresAt ? Math.floor((payload.expiresAt - Date.now()) / 1000) : 60 * 60 * 24,
   });
 }
 
@@ -48,4 +53,9 @@ export async function getSession(): Promise<SessionPayload | null> {
   }
 
   return decodeSession(cookie.value);
+}
+
+export async function isSessionValid(): Promise<boolean> {
+  const session = await getSession();
+  return session !== null;
 }

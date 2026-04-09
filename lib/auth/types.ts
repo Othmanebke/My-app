@@ -12,4 +12,9 @@ export type AuthActionState = {
 export type SessionPayload = {
   email: string;
   name?: string;
+  token?: string; // Token du CMS (optionnel)
+  expiresAt?: number; // Timestamp d'expiration (ms)
 };
+
+// Re-export API types
+export type { ApiError } from "@/lib/api/types";

@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { createSession, clearSession } from "@/lib/auth/session";
-import type { AuthActionState } from "@/lib/auth/types";
+import { authService } from "@/lib/services/auth-service";
+import type { AuthActionState, ApiError } from "@/lib/auth/types";
 import {
   hasValidationErrors,
   validateLoginInput,
@@ -22,12 +23,24 @@ export async function loginAction(
     };
   }
 
-  await createSession({
-    email: values.email,
-    name: values.email.split("@")[0],
-  });
+  try {
+    const response = await authService.login(values.email, values.password);
 
-  redirect("/dashboard");
+    // Créer la session avec le token du CMS
+    await createSession({
+      email: response.user.email,
+      name: response.user.name,
+      token: response.auth.token,
+      expiresAt: Date.now() + response.auth.expiresIn * 1000,
+    });
+
+    redirect("/dashboard");
+  } catch (error) {
+    const apiError = error as unknown as ApiError;
+    return {
+      message: apiError?.message || "Erreur lors de la connexion. Réessaye.",
+    };
+  }
 }
 
 export async function registerAction(
@@ -43,13 +56,28 @@ export async function registerAction(
     };
   }
 
-  // Placeholder: brancher ici la creation utilisateur en base (Prisma/Drizzle/etc.)
-  await createSession({
-    email: values.email,
-    name: values.name,
-  });
+  try {
+    const response = await authService.register(
+      values.name,
+      values.email,
+      values.password,
+    );
 
-  redirect("/dashboard");
+    // Créer la session avec le token du CMS
+    await createSession({
+      email: response.user.email,
+      name: response.user.name,
+      token: response.auth.token,
+      expiresAt: Date.now() + response.auth.expiresIn * 1000,
+    });
+
+    redirect("/dashboard");
+  } catch (error) {
+    const apiError = error as unknown as ApiError;
+    return {
+      message: apiError?.message || "Erreur lors de l'inscription. Réessaye.",
+    };
+  }
 }
 
 export async function logoutAction(): Promise<void> {
