@@ -18,14 +18,16 @@ export function AuthForm({ variant, action }: AuthFormProps): JSX.Element {
   const [state, formAction] = useActionState(action, undefined);
 
   const isRegister = variant === "register";
+  const fieldClassName =
+    "mt-1 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2.5 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white";
 
   return (
     <form action={formAction} className="space-y-4">
       {isRegister ? (
-        <label className="block space-y-1 text-sm text-zinc-700">
+        <label className="block text-sm text-zinc-700">
           <span>Nom complet</span>
           <input
-            className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-zinc-900 outline-none transition focus:border-zinc-900"
+            className={fieldClassName}
             name="name"
             type="text"
             autoComplete="name"
@@ -38,10 +40,10 @@ export function AuthForm({ variant, action }: AuthFormProps): JSX.Element {
         </label>
       ) : null}
 
-      <label className="block space-y-1 text-sm text-zinc-700">
+      <label className="block text-sm text-zinc-700">
         <span>Email</span>
         <input
-          className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-zinc-900 outline-none transition focus:border-zinc-900"
+          className={fieldClassName}
           name="email"
           type="email"
           autoComplete="email"
@@ -53,10 +55,10 @@ export function AuthForm({ variant, action }: AuthFormProps): JSX.Element {
         ) : null}
       </label>
 
-      <label className="block space-y-1 text-sm text-zinc-700">
+      <label className="block text-sm text-zinc-700">
         <span>Mot de passe</span>
         <input
-          className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-zinc-900 outline-none transition focus:border-zinc-900"
+          className={fieldClassName}
           name="password"
           type="password"
           autoComplete={isRegister ? "new-password" : "current-password"}
