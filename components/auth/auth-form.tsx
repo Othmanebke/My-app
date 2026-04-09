@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useFormStatus } from "react";
 import type { AuthActionState } from "@/lib/auth/types";
-import { SubmitButton } from "@/components/auth/submit-button";
+import { Input, Button } from "@/components/ui";
+import { FieldError } from "@/components/form";
 
 type AuthVariant = "login" | "register";
 
@@ -14,68 +15,67 @@ type AuthFormProps = {
   ) => Promise<AuthActionState | undefined>;
 };
 
+function SubmitButton({ isRegister }: { isRegister: boolean }): JSX.Element {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      isLoading={pending}
+      disabled={pending}
+      className="w-full"
+    >
+      {isRegister ? "Creer mon compte" : "Se connecter"}
+    </Button>
+  );
+}
+
 export function AuthForm({ variant, action }: AuthFormProps): JSX.Element {
   const [state, formAction] = useActionState(action, undefined);
 
   const isRegister = variant === "register";
-  const fieldClassName =
-    "mt-1 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2.5 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white";
 
   return (
     <form action={formAction} className="space-y-4">
       {isRegister ? (
-        <label className="block text-sm text-zinc-700">
-          <span>Nom complet</span>
-          <input
-            className={fieldClassName}
-            name="name"
-            type="text"
-            autoComplete="name"
-            placeholder="Ex: Othmane Rahmani"
-            required
-          />
-          {state?.errors?.name ? (
-            <p className="text-xs text-red-600">{state.errors.name}</p>
-          ) : null}
-        </label>
+        <Input
+          name="name"
+          label="Nom complet"
+          type="text"
+          placeholder="Ex: Othmane Rahmani"
+          error={state?.errors?.name}
+          autoComplete="name"
+          required
+        />
       ) : null}
 
-      <label className="block text-sm text-zinc-700">
-        <span>Email</span>
-        <input
-          className={fieldClassName}
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="you@example.com"
-          required
-        />
-        {state?.errors?.email ? (
-          <p className="text-xs text-red-600">{state.errors.email}</p>
-        ) : null}
-      </label>
-
-      <label className="block text-sm text-zinc-700">
-        <span>Mot de passe</span>
-        <input
-          className={fieldClassName}
-          name="password"
-          type="password"
-          autoComplete={isRegister ? "new-password" : "current-password"}
-          placeholder="********"
-          required
-        />
-        {state?.errors?.password ? (
-          <p className="text-xs text-red-600">{state.errors.password}</p>
-        ) : null}
-      </label>
-
-      {state?.message ? <p className="text-sm text-red-600">{state.message}</p> : null}
-
-      <SubmitButton
-        idleLabel={isRegister ? "Creer mon compte" : "Se connecter"}
-        pendingLabel={isRegister ? "Creation du compte..." : "Connexion..."}
+      <Input
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="you@example.com"
+        error={state?.errors?.email}
+        autoComplete="email"
+        required
       />
+
+      <Input
+        name="password"
+        label="Mot de passe"
+        type="password"
+        placeholder="••••••••"
+        error={state?.errors?.password}
+        autoComplete={isRegister ? "new-password" : "current-password"}
+        required
+      />
+
+      {state?.message && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          {state.message}
+        </div>
+      )}
+
+      <SubmitButton isRegister={isRegister} />
     </form>
   );
 }
