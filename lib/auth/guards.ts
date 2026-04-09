@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth/session";
+import { clearSession, getSession } from "@/lib/auth/session";
+import { authService } from "@/lib/services/auth-service";
 import type { SessionPayload } from "@/lib/auth/types";
 
 export async function requireSession(): Promise<SessionPayload> {
@@ -7,6 +8,15 @@ export async function requireSession(): Promise<SessionPayload> {
 
   if (!session) {
     redirect("/login");
+  }
+
+  if (session.token) {
+    const verification = await authService.verifyToken(session.token);
+
+    if (!verification.valid) {
+      await clearSession();
+      redirect("/login");
+    }
   }
 
   return session;

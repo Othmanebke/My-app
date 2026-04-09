@@ -56,6 +56,24 @@ Flux attendu:
 - Pour la prod: brancher Prisma/Drizzle + hash de mot de passe + provider OAuth.
 - Next.js 16 remplace `middleware.ts` par `proxy.ts`.
 
+## Utiliser Strapi (recommande)
+
+1. Creer un fichier `.env.local` a la racine avec:
+
+```bash
+AUTH_PROVIDER=strapi
+AUTH_API_BASE_URL=http://localhost:1337/api
+```
+
+2. Dans Strapi, activer le plugin `Users & Permissions` (par defaut).
+3. Verifier les endpoints publics:
+	- `POST /api/auth/local`
+	- `POST /api/auth/local/register`
+4. Lancer Strapi puis cette app.
+5. Tester `register` puis `login`.
+
+Le dashboard valide ensuite le token via `GET /api/users/me` cote serveur.
+
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.

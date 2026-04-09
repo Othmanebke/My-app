@@ -7,8 +7,13 @@ import type { LoginResponse, RegisterResponse, ApiError } from "@/lib/api/types"
 
 type AuthProvider = "mock" | "strapi" | "custom";
 
-const AUTH_PROVIDER = (process.env.AUTH_PROVIDER ?? "mock") as AuthProvider;
+const AUTH_PROVIDER_RAW = (process.env.AUTH_PROVIDER ?? "mock").toLowerCase();
+const AUTH_PROVIDER: AuthProvider =
+  AUTH_PROVIDER_RAW === "strapi" || AUTH_PROVIDER_RAW === "custom"
+    ? AUTH_PROVIDER_RAW
+    : "mock";
 const API_BASE_URL = process.env.AUTH_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "";
+const AUTH_API_TOKEN = process.env.AUTH_API_TOKEN;
 
 type StrapiAuthPayload = {
   jwt: string;
@@ -25,10 +30,12 @@ type StrapiAuthPayload = {
 class AuthService {
   private baseUrl: string;
   private provider: AuthProvider;
+  private apiToken?: string;
 
-  constructor(baseUrl: string = API_BASE_URL, provider: AuthProvider = AUTH_PROVIDER) {
-    this.baseUrl = baseUrl;
+  constructor(baseUrl: string = API_BASE_URL, provider: AuthProvider = AUTH_PROVIDER, apiToken?: string) {
+    this.baseUrl = baseUrl.replace(/\/+$/, "");
     this.provider = provider;
+    this.apiToken = apiToken;
   }
 
   private ensureBaseUrl(): void {
@@ -46,31 +53,42 @@ class AuthService {
   private async fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     this.ensureBaseUrl();
 
-    const url = `${this.baseUrl}${endpoint}`;
+    const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const url = `${this.baseUrl}${path}`;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      ...(this.apiToken ? { Authorization: `Bearer ${this.apiToken}` } : {}),
+      ...options.headers,
+    };
 
     try {
       const response = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          ...options.headers,
-        },
+        headers,
         cache: "no-store",
         ...options,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+
+        // Format Strapi v4/v5: { error: { status, name, message, details } }
+        const strapiError =
+          typeof errorData === "object" && errorData !== null && "error" in errorData
+            ? (errorData as { error?: { name?: string; message?: string; details?: Record<string, string> } }).error
+            : undefined;
+
         const error: ApiError = {
-          code: `HTTP_${response.status}`,
-          message: errorData.message || `Erreur serveur: ${response.status}`,
-          details: errorData.details,
+          code: strapiError?.name ?? `HTTP_${response.status}`,
+          message: strapiError?.message ?? (errorData as { message?: string }).message ?? `Erreur serveur: ${response.status}`,
+          details: strapiError?.details ?? (errorData as { details?: Record<string, string> }).details,
         };
         throw error;
       }
 
       return await response.json();
     } catch (error) {
-      if (error instanceof Error && "code" in error) {
+      if (typeof error === "object" && error !== null && "code" in error) {
         throw error as ApiError;
       }
 
@@ -230,4 +248,4 @@ class AuthService {
   }
 }
 
-export const authService = new AuthService();
+export const authService = new AuthService(API_BASE_URL, AUTH_PROVIDER, AUTH_API_TOKEN);
