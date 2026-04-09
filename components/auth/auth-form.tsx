@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useFormStatus } from "react";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import type { AuthActionState } from "@/lib/auth/types";
 import { Input, Button } from "@/components/ui";
 import { FieldError } from "@/components/form";
