@@ -13,9 +13,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-zinc-900 text-white hover:bg-zinc-700",
+  primary: "bg-zinc-950 text-white hover:bg-zinc-800 shadow-sm",
   secondary: "bg-zinc-100 text-zinc-900 hover:bg-zinc-200",
-  outline: "border border-zinc-300 text-zinc-900 hover:border-zinc-900",
+  outline: "border border-zinc-300 bg-white text-zinc-900 hover:border-zinc-950",
   ghost: "text-zinc-700 hover:bg-zinc-100",
 };
 
@@ -34,7 +34,7 @@ export function Button({
   disabled = false,
   ...props
 }: ButtonProps): JSX.Element {
-  const baseClasses = "inline-flex items-center justify-center gap-2 transition disabled:cursor-not-allowed disabled:opacity-70";
+  const baseClasses = "inline-flex items-center justify-center gap-2 transition duration-200 disabled:cursor-not-allowed disabled:opacity-70";
   const variantClass = variantClasses[variant];
   const sizeClass = sizeClasses[size];
 

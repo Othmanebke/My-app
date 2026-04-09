@@ -16,18 +16,18 @@ export function TitlePage({
   return (
     <div className="flex flex-col gap-2">
       {icon && (
-        <div className="text-2xl">
+        <div className="text-2xl text-zinc-900">
           {icon}
         </div>
       )}
 
       {subtitle && (
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
           {subtitle}
         </p>
       )}
 
-      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
+      <h1 className="text-2xl font-semibold tracking-[-0.03em] text-zinc-950 sm:text-3xl">
         {title}
       </h1>
 

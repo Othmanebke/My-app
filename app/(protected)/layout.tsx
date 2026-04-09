@@ -1,7 +1,8 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { LogoutButton } from "@/components/dashboard/logout-button";
 import { requireSession } from "@/lib/auth/guards";
+import { DashboardMobileNav, DashboardNav } from "@/components/ui/dashboard-nav";
+import { RouteTransition } from "@/components/ui/route-transition";
 
 export default async function ProtectedLayout({
   children,
@@ -11,42 +12,19 @@ export default async function ProtectedLayout({
   const session = await requireSession();
 
   return (
-    <main className="flex flex-1 bg-zinc-100/80">
-      <aside className="hidden w-72 flex-col border-r border-zinc-200 bg-white px-5 py-6 lg:flex">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">Workspace</p>
-        <h1 className="mt-2 text-xl font-semibold tracking-tight text-zinc-900">Pilot Dashboard</h1>
+    <main className="flex flex-1 bg-transparent">
+      <aside className="hidden w-72 flex-col border-r border-white/80 bg-white/75 px-5 py-6 backdrop-blur lg:flex">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Workspace</p>
+        <h1 className="mt-2 text-xl font-semibold tracking-tight text-zinc-950">Pilot Dashboard</h1>
+        <p className="mt-2 text-sm leading-6 text-zinc-600">
+          Vue d&apos;ensemble des opérations, des revenus et des priorités produit.
+        </p>
 
-        <nav className="mt-8 space-y-2">
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-between rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
-          >
-            Vue globale
-            <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">Live</span>
-          </Link>
-          <a
-            href="#kpi"
-            className="block rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
-          >
-            KPIs
-          </a>
-          <a
-            href="#pipeline"
-            className="block rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
-          >
-            Pipeline
-          </a>
-          <a
-            href="#activity"
-            className="block rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
-          >
-            Activite recente
-          </a>
-        </nav>
+        <DashboardNav />
 
-        <div className="mt-auto rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+        <div className="mt-auto rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">Session</p>
-          <p className="mt-2 truncate text-sm font-medium text-zinc-800">{session.email}</p>
+          <p className="mt-2 truncate text-sm font-medium text-zinc-900">{session.email}</p>
           <div className="mt-4">
             <LogoutButton />
           </div>
@@ -54,23 +32,30 @@ export default async function ProtectedLayout({
       </aside>
 
       <section className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
-        <header className="rounded-2xl border border-zinc-200 bg-white px-4 py-4 shadow-sm sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-zinc-500">Dashboard</p>
-              <h2 className="mt-1 text-xl font-semibold text-zinc-900 sm:text-2xl">
-                Bonjour, {session.name ?? "utilisateur"}
-              </h2>
+        <RouteTransition className="space-y-6">
+          <header className="rounded-3xl border border-white/80 bg-white/80 px-4 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.06)] backdrop-blur sm:px-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Dashboard</p>
+                <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 sm:text-2xl">
+                  Bonjour, {session.name ?? "utilisateur"}
+                </h2>
+                <p className="mt-1 text-sm text-zinc-600">Surveille les indicateurs clés et les actions à mener aujourd&apos;hui.</p>
+              </div>
+
+              <div className="hidden items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 shadow-sm sm:flex">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                Systeme operationnel
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
-              Systeme operationnel
+            <div className="mt-4">
+              <DashboardMobileNav />
             </div>
-          </div>
-        </header>
+          </header>
 
-        <div className="mt-6">{children}</div>
+          <div>{children}</div>
+        </RouteTransition>
       </section>
     </main>
   );

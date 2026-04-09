@@ -5,7 +5,7 @@ export function LogoutButton(): JSX.Element {
     <form action={logoutAction}>
       <button
         type="submit"
-        className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-800 transition hover:border-zinc-900 hover:text-zinc-900"
+        className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-800 shadow-sm transition hover:border-zinc-950 hover:text-zinc-950"
       >
         Se deconnecter
       </button>

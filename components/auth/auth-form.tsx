@@ -4,7 +4,6 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import type { AuthActionState } from "@/lib/auth/types";
 import { Input, Button } from "@/components/ui";
-import { FieldError } from "@/components/form";
 
 type AuthVariant = "login" | "register";
 
@@ -71,12 +70,14 @@ export function AuthForm({ variant, action }: AuthFormProps): JSX.Element {
       />
 
       {state?.message && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <div className="rounded-2xl border border-red-200 bg-red-50/80 p-3 text-sm text-red-700">
           {state.message}
         </div>
       )}
 
-      <SubmitButton isRegister={isRegister} />
+      <div className="pt-2">
+        <SubmitButton isRegister={isRegister} />
+      </div>
     </form>
   );
 }

@@ -25,7 +25,7 @@ export function Input({
   return (
     <label className="block text-sm text-zinc-700">
       {label && (
-        <span className="mb-2 block font-medium text-zinc-900">{label}</span>
+        <span className="mb-2 block font-medium tracking-tight text-zinc-950">{label}</span>
       )}
 
       <div className="relative">
@@ -38,7 +38,7 @@ export function Input({
         <input
           id={generatedId}
           name={name}
-          className={`w-full rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2.5 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500 ${
+          className={`w-full rounded-2xl border border-zinc-300 bg-white px-3 py-2.5 text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-950 focus:bg-white disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500 shadow-sm ${
             icon ? "pl-10" : ""
           } ${error ? "border-red-500 focus:border-red-600" : ""} ${className}`.trim()}
           disabled={disabled}
