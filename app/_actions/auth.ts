@@ -36,6 +36,7 @@ export async function loginAction(
 
   // Créer la session avec le token du CMS
   await createSession({
+    userId: response.user.id,
     email: response.user.email,
     name: response.user.name,
     token: response.auth.token,
@@ -75,6 +76,7 @@ export async function registerAction(
 
   // Créer la session avec le token du CMS
   await createSession({
+    userId: response.user.id,
     email: response.user.email,
     name: response.user.name,
     token: response.auth.token,

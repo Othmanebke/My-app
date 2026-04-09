@@ -39,6 +39,11 @@ const dashboardLinks = [
     title: "Activité",
     description: "Journal des événements récents, incidents et résolutions.",
   },
+  {
+    href: "/dashboard/account",
+    title: "Compte",
+    description: "Consulte tes informations de session et paramètres de compte.",
+  },
 ];
 
 export default function DashboardPage(): JSX.Element {
@@ -67,7 +72,7 @@ export default function DashboardPage(): JSX.Element {
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-4">
         {dashboardLinks.map((item) => (
           <Link
             key={item.href}

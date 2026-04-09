@@ -14,6 +14,7 @@ const navItems: DashboardNavItem[] = [
   { href: "/dashboard/kpis", label: "KPIs" },
   { href: "/dashboard/pipeline", label: "Pipeline" },
   { href: "/dashboard/activity", label: "Activité récente" },
+  { href: "/dashboard/account", label: "Mon compte" },
 ];
 
 export function DashboardNav(): JSX.Element {

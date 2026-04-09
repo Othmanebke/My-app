@@ -10,6 +10,7 @@ export type AuthActionState = {
 };
 
 export type SessionPayload = {
+  userId?: string;
   email: string;
   name?: string;
   token?: string; // Token du CMS (optionnel)

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { LogoutButton } from "@/components/dashboard/logout-button";
 import { requireSession } from "@/lib/auth/guards";
 import { DashboardMobileNav, DashboardNav } from "@/components/ui/dashboard-nav";
@@ -24,7 +25,14 @@ export default async function ProtectedLayout({
 
         <div className="mt-auto rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">Session</p>
+          <p className="mt-2 truncate text-sm font-semibold text-zinc-950">{session.name ?? "Utilisateur"}</p>
           <p className="mt-2 truncate text-sm font-medium text-zinc-900">{session.email}</p>
+          <Link
+            href="/dashboard/account"
+            className="mt-3 inline-block text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600 underline decoration-zinc-300 underline-offset-4 hover:text-zinc-950 hover:decoration-zinc-950"
+          >
+            Voir mon compte
+          </Link>
           <div className="mt-4">
             <LogoutButton />
           </div>
