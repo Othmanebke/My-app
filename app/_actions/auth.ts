@@ -23,24 +23,26 @@ export async function loginAction(
     };
   }
 
+  let response;
+
   try {
-    const response = await authService.login(values.email, values.password);
-
-    // Créer la session avec le token du CMS
-    await createSession({
-      email: response.user.email,
-      name: response.user.name,
-      token: response.auth.token,
-      expiresAt: Date.now() + response.auth.expiresIn * 1000,
-    });
-
-    redirect("/dashboard");
+    response = await authService.login(values.email, values.password);
   } catch (error) {
     const apiError = error as unknown as ApiError;
     return {
       message: apiError?.message || "Erreur lors de la connexion. Réessaye.",
     };
   }
+
+  // Créer la session avec le token du CMS
+  await createSession({
+    email: response.user.email,
+    name: response.user.name,
+    token: response.auth.token,
+    expiresAt: Date.now() + response.auth.expiresIn * 1000,
+  });
+
+  redirect("/dashboard");
 }
 
 export async function registerAction(
@@ -56,28 +58,30 @@ export async function registerAction(
     };
   }
 
+  let response;
+
   try {
-    const response = await authService.register(
+    response = await authService.register(
       values.name,
       values.email,
       values.password,
     );
-
-    // Créer la session avec le token du CMS
-    await createSession({
-      email: response.user.email,
-      name: response.user.name,
-      token: response.auth.token,
-      expiresAt: Date.now() + response.auth.expiresIn * 1000,
-    });
-
-    redirect("/dashboard");
   } catch (error) {
     const apiError = error as unknown as ApiError;
     return {
       message: apiError?.message || "Erreur lors de l'inscription. Réessaye.",
     };
   }
+
+  // Créer la session avec le token du CMS
+  await createSession({
+    email: response.user.email,
+    name: response.user.name,
+    token: response.auth.token,
+    expiresAt: Date.now() + response.auth.expiresIn * 1000,
+  });
+
+  redirect("/dashboard");
 }
 
 export async function logoutAction(): Promise<void> {
